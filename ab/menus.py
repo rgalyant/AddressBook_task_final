@@ -3,7 +3,6 @@ Menus for AddressBook CLI
 """
 
 from .Record import Record
-from .AddressBook import AddressBook
 from . import utils
 
 def main():
@@ -37,7 +36,7 @@ def main():
         print("Error: invalid menu option.\n")
         return None
 
-def record(record = None, search = False):
+def record(record=None, search=False):
     """
     Record data input menu for CLI.
     """
@@ -75,19 +74,19 @@ def record(record = None, search = False):
     print("")
     return record
 
-def index(addressBook, search = None, remove = False):
+def index(address_book, search=None, remove=False):
     """
     Indexing (listing) menu for CLI.
     """
     
     lengths = [10, 20, 20, 15, 15]
-    template = " ".join(map(lambda l: "{:" + str(l) + "}", lengths))
+    template = " ".join(map(lambda l: f"{{:{l}}}", lengths))
 
     print(template.format("First name", "Last name", "Phone", "Address", "Date of birth"))
     print(template.format(*["=" * l for l in lengths]))
 
     to_remove = []
-    for i, record in enumerate(addressBook):
+    for i, record in enumerate(address_book):
         if not search or \
             utils.match(record.first_name, search.first_name) and \
             utils.match(record.last_name, search.last_name) and \
@@ -106,13 +105,13 @@ def index(addressBook, search = None, remove = False):
         if consent:
             to_remove.reverse()
             for i in to_remove:
-                del addressBook[i]
+                del address_book[i]
         else:
             print("Operation calceled.")
     
     print("")
 
-def yes_no(prompt, default = True):
+def yes_no(prompt, default=True):
     """
     Yes/no dialog for CLI.
     """

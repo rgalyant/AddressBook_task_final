@@ -10,7 +10,7 @@ class AddressBook(list[Record]):
     def __init__(self, filename):
         self.filename = filename
 
-    def save(self, filename = None):
+    def save(self, filename=None):
         if not filename:
             filename = self.filename
         
@@ -30,9 +30,13 @@ class AddressBook(list[Record]):
             print("Failed to save data. Session is not saved.")
             print(ex)
 
-    def load(self, filename = None):
+    def load(self, filename=None):
         if not filename:
             filename = self.filename
+
+        import os # Import only if necessary
+        if not os.path.exists(filename) or not os.path.isfile(filename):
+            return
 
         try:
             with open(filename, "rt") as file:
@@ -44,14 +48,14 @@ class AddressBook(list[Record]):
                     line = line[:-1]
                     line_counter += 1
 
-                    bufLen = len(buffer)
+                    buffer_length = len(buffer)
                     if line == "RECORD_END":
-                        if bufLen == 5 or bufLen == 3:
+                        if buffer_length == 5 or buffer_length == 3:
                             self.append(Record(*buffer))
                         else:
                             print(f"Corrupted record at line {line_counter} (marker encountered).")
                         buffer.clear()
-                    elif bufLen == 5:
+                    elif buffer_length == 5:
                         print(f"Corrupted record at line {line_counter} (marker expected).")
                         buffer.clear()
                     else:
@@ -59,5 +63,6 @@ class AddressBook(list[Record]):
                 if len(buffer) > 0:
                     print(f"Corrupted last record.")
                     buffer.clear()
+            print(f"Successfully loaded {len(self)} record(s)")
         except OSError as ex:
-            print(f"Encountered error when trying to load file: {ex}") # Fresh AB is implied
+            print(f"Encountered error when trying to load file: {ex}")
